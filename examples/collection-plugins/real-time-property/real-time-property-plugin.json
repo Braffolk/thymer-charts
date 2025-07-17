@@ -1,0 +1,80 @@
+{
+	"ver": 1,
+	"name": "Resource Demo",
+	"icon": "tools",
+	"home": false,
+	"page_field_ids": [
+		"title",
+		"utilization"
+	],
+	"item_name": "Resource",
+	"description": "Real-time property rendering demo",
+	"default_banner": null,
+	"show_sidebar_items": false,
+	"show_cmdpal_items": false,
+	"fields": [
+		{
+			"icon": "ti-chart-bar",
+			"id": "utilization",
+			"label": "Utilization",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "dynamic"
+		},
+		{
+			"icon": "ti-clock-edit",
+			"id": "updated_at",
+			"label": "Modified",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-clock-plus",
+			"id": "created_at",
+			"label": "Created",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-photo",
+			"id": "banner",
+			"label": "Banner",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "banner"
+		}
+	],
+	"sidebar_record_sort_dir": "desc",
+	"sidebar_record_sort_field_id": "updated_at",
+	"managed": {
+		"fields": false,
+		"views": false,
+		"sidebar": false
+	},
+	"custom": {},
+	"views": [
+		{
+			"id": "table",
+			"type": "table",
+			"icon": "ti-table",
+			"label": "Projects Table",
+			"query": "",
+			"description": "Table view with custom rendering",
+			"read_only": false,
+			"shown": true,
+			"field_ids": [
+				"title",
+				"utilization"
+			],
+			"sort_dir": "asc",
+			"sort_field_id": "title",
+			"group_by_field_id": null
+		}
+	]
+}

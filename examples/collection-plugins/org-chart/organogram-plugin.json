@@ -1,0 +1,107 @@
+{
+	"ver": 1,
+	"name": "People",
+	"icon": "ti-user",
+	"home": false,
+	"page_field_ids": [
+		"title",
+		"FK6DMH4J1C54A95"
+	],
+	"item_name": "Person",
+	"description": "Organogram test",
+	"default_banner": null,
+	"show_sidebar_items": false,
+	"show_cmdpal_items": false,
+	"fields": [
+		{
+			"icon": "ti-abc",
+			"id": "title",
+			"label": "Title",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "text"
+		},
+		{
+			"icon": "ti-clock-edit",
+			"id": "updated_at",
+			"label": "Modified",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-clock-plus",
+			"id": "created_at",
+			"label": "Created",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-photo",
+			"id": "banner",
+			"label": "Banner",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "banner"
+		},
+		{
+			"id": "FK6DMH4J1C54A95",
+			"active": true,
+			"icon": "ti-id",
+			"label": "Manager",
+			"many": false,
+			"type": "text",
+			"read_only": false
+		}
+	],
+	"sidebar_record_sort_dir": "desc",
+	"sidebar_record_sort_field_id": "updated_at",
+	"managed": {
+		"fields": false,
+		"views": false,
+		"sidebar": false
+	},
+	"custom": {},
+	"views": [
+		{
+			"id": "table",
+			"type": "table",
+			"icon": "",
+			"label": "Table",
+			"query": "",
+			"description": "",
+			"read_only": false,
+			"shown": true,
+			"field_ids": [
+				"title",
+				"FK6DMH4J1C54A95"
+			],
+			"sort_dir": "desc",
+			"sort_field_id": "created_at",
+			"group_by_field_id": null
+		},
+		{
+			"id": "VVD2DR1RFHR96B1",
+			"shown": true,
+			"icon": "ti-building-skyscraper",
+			"label": "Organogram",
+			"description": "",
+			"query": "",
+			"field_ids": [
+				"title",
+				"FK6DMH4J1C54A95"
+			],
+			"type": "custom",
+			"read_only": false,
+			"group_by_field_id": null,
+			"sort_dir": "desc",
+			"sort_field_id": "updated_at",
+			"opts": {}
+		}
+	]
+}

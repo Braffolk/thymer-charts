@@ -1,0 +1,22 @@
+{
+  "name": "thymer-plugin-dev",
+  "version": "0.0.1",
+  "type": "module",
+  "types": "./types.d.ts",
+  "scripts": {
+    "dev": "node dev.js",
+    "dev:verbose": "node dev.js --print-code",
+    "build": "node dev.js --once"
+  },
+  "scriptExplanations": {
+    "dev": "build + watch + push to Chrome",
+    "build": "single production bundle → dist/plugin.js"
+  },
+  "devDependencies": {
+    "chokidar": "latest",
+    "chrome-remote-interface": "latest"
+  },
+  "dependencies": {
+    "esbuild": "^0.25.6"
+  }
+}

@@ -1,0 +1,100 @@
+{
+	"ver": 1,
+	"name": "Project Demo",
+	"icon": "tools",
+	"home": false,
+	"page_field_ids": [
+		"project_code",
+		"customer_name",
+		"difficulty"
+	],
+	"item_name": "Project",
+	"description": "Project management demo with custom rendering and sorting",
+	"default_banner": null,
+	"show_sidebar_items": false,
+	"show_cmdpal_items": false,
+	"fields": [
+		{
+			"icon": "ti-abc",
+			"id": "project_code",
+			"label": "Project Code",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "text"
+		},
+		{
+			"icon": "ti-user",
+			"id": "customer_name",
+			"label": "Customer Name",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "text"
+		},
+		{
+			"icon": "ti-chart-bar",
+			"id": "difficulty",
+			"label": "Difficulty",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "number"
+		},
+		{
+			"icon": "ti-clock-edit",
+			"id": "updated_at",
+			"label": "Modified",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-clock-plus",
+			"id": "created_at",
+			"label": "Created",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-photo",
+			"id": "banner",
+			"label": "Banner",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "banner"
+		}
+	],
+	"sidebar_record_sort_dir": "desc",
+	"sidebar_record_sort_field_id": "updated_at",
+	"managed": {
+		"fields": false,
+		"views": false,
+		"sidebar": false
+	},
+	"custom": {},
+	"views": [
+		{
+			"id": "table",
+			"type": "table",
+			"icon": "ti-table",
+			"label": "Projects Table",
+			"query": "",
+			"description": "Table view with custom rendering and sorting",
+			"read_only": false,
+			"shown": true,
+			"field_ids": [
+				"project_code",
+				"customer_name",
+				"difficulty"
+			],
+			"sort_dir": "asc",
+			"sort_field_id": "customer_name",
+			"group_by_field_id": null
+		}
+	]
+}

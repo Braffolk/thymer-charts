@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+
+A plugin consists of two parts: plugin.js (the code) and plugin.json (configuration).
+
+Two types of plugins exists: Collection plugins, and Global Plugins.
+
+Collection plugins can be used to override and extend functionality regarding collections (databases) of notes in Thymer. Everything to do with views (table, kanban, calendar, gallery and custom views), properties (columns), formulas, filters, and so on.
+
+Global plugins can be used to add extra functionality to the app/UI, like panels, statusbar icons, sidebar icons, buttons, toasters, and so on.
+
+Examples of collection plugins are located in the @examples/collection-plugins directory.
+
+Examples of global app plugins are located in the @examples/app-plugins directory.
+
+The API spec and additional documentation for the plugin code to use is in @types.d.ts
+
+When generating plugin code, a few extra rules to take into account:
+- NEVER override the constructor. instead, add a function onLoad() to the class where the code runs
+- for collection plugins, the plugin.js should contain a single export, a class called Plugin:
+
+   export class Plugin extends CollectionPlugin
+
+- for global app plugins, the plugin.js should contain a single export, a class called Plugin:
+
+   export class Plugin extends AppPlugin
+
+- implementing some features require both configuration and code changes. for example, a computed field would need to be defined in the plugin configuration JSON as a "dynamic" property, and needs to use the .formula() API in the code to calculate the value.
+
+- to define computed fields, use the .formula() API in the code
+
+- when adding formulas or render values to property fields, make sure to use the exact same ID or Label of the field as defined in the JSON config
+

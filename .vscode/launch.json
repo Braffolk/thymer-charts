@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Thymer (Chrome)",
+      "url": "https://myaccount.thymer.com/",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}",
+      "sourceMapPathOverrides": {
+        "*/thymer-plugin.js": "${workspaceFolder}/plugin.js"
+      }
+    }
+  ]
+}
