@@ -63,7 +63,9 @@ const COLLECTION_PRIMARY_ACTION_FIRST: "first";
  * @property {PluginSortDir} sort_dir - see SortDir
  * @property {string?} group_by_field_id
  * @property {string[]} field_ids - list of field ids (from PluginConfiguration.fields) we want to show in this view
- * @property {string} query - in case of COLLECTION_VIEW_SINGLE_RECORD, this is the record's guid
+ * @property {string} [query] - search query for this view
+ * @property {string} [invalid_query] - the (syntax)error message for the query
+ * @property {string} [single_record_guid] - for use with COLLECTION_VIEW_SINGLE_RECORD
  * @property {Object<string, any>} [opts] - view-specific options
  */
 const COLLECTION_PRIMARY_ACTION_OVERVIEW: "overview";
@@ -180,9 +182,17 @@ type CollectionView = {
      */
     field_ids: string[];
     /**
-     * - in case of COLLECTION_VIEW_SINGLE_RECORD, this is the record's guid
+     * - search query for this view
      */
-    query: string;
+    query?: string;
+    /**
+     * - the (syntax)error message for the query
+     */
+    invalid_query?: string;
+    /**
+     * - for use with COLLECTION_VIEW_SINGLE_RECORD
+     */
+    single_record_guid?: string;
     /**
      * - view-specific options
      */
@@ -678,7 +688,7 @@ type PluginConfiguration = {
     /**
      * - Banner to use as banner for all items in this collection, unless item has override
      */
-    default_banner: PropertyFileValue;
+    default_banner: PropertyFileValue | null;
     views: CollectionView[];
     /**
      * - [PropertyField,]
@@ -1153,9 +1163,9 @@ type PluginSortDir = "asc" | "desc";
 
 type PluginStatusBarItem = {
     remove: () => void;
-    setHtmlLabel: (newHtmlLabel: string | null) => void;
+    setHtmlLabel: (newHtmlLabel: string) => void;
     setLabel: (newLabel: string) => void;
-    setIcon: (newIcon: IconName | null) => void;
+    setIcon: (newIcon: IconName) => void;
     setTooltip: (newTip: string) => void;
     hide: () => void;
     show: () => void;

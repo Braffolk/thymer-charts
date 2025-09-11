@@ -167,7 +167,6 @@ This should work great for CSS, small images, and so on. As the plugins become p
 - Your plugin code is stored in your Workspace data and needs to be downloaded, so make sure the asset bundle isn't too big.
 - We use localStorage for Hot Reloading, which adds an additional size limit of a few MB.
 - Consider using external URLs/fetch/import to import large dependencies or assets.
-- Unlike other data in your workspace, the plugin JS code (and any asset you include in your bundle) is not end-to-end-encrypted. The plugin JSON _is_ end-to-end-encrypted, so you can store secrets in there (only members of your workspace can see them). You can access config in your JS using `this.getConfiguration().custom?.my_config_key`
 - If you're writing/pasting code directly into the Edit Code dialog in Thymer, make sure not to include and _export_ or _import_ keywords. They only work in the development set up and are removed by the build step.
 
 ### Using the Examples
