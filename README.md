@@ -1,194 +1,97 @@
-# Thymer Plugin SDK
+# Thymer ECharts Plugin
 
-## Introduction
+This plugin integrates Apache ECharts into Thymer, allowing for the creation, configuration, and rendering of charts directly within collection records and text documents.
 
-See the [Plugins](https://thymer.com/plugins/) page on the [Thymer](https://thymer.com) website for a general introduction to Thymer plugins. The plugins page includes **screenshots** and **demo videos** of the examples (which you'll find in the _examples_ directory).
+![Thymer charts](./examples/thymer-charts.png)
 
+## Functionality
 
-## Plugin SDK
+The plugin extends the collection capabilities with two primary rendering modes:
 
-This repository contains a minimal starter kit showing how to develop, hot-reload, and debug a Thymer Plugin with **Chrome DevTools Protocol** (no local HTTPS server required).
+1.  **Chart Editor View**: A custom collection view that provides a split-pane interface. It displays the rendered chart on one side and configuration controls (JSON editors for data and series) on the other.
+2.  **Inline Widgets**: A DOM observation mechanism that detects specific link references (e.g., `[[Chart Name]]`) formatted as "Link with Icons" and replaces them with an interactive ECharts web component.
 
-```
-thymer-plugin-dev
-├─ plugin.js                 # your plugin code (edit this file)
-├─ plugin.json               # your plugin conf (edit this file)
-├─ dev.js                    # build & push script; run 'npm run dev'
-├─ types.d.ts                # API Documentation
-├── examples/                # Example plugins
-│   ├── app-plugins/         # Global app plugin examples
-│   └── collection-plugins/  # Collection plugin examples
-└── dist/                    # Built plugin output
-```
+## Data Model
 
+The plugin relies on specific properties within the collection to generate the chart configuration.
 
-## 🔌 Plugin Types
+| Property | Type | Description |
+| :--- | :--- | :--- |
+| **title** | Text | The display name of the record. |
+| **xaxis** | Choice | Axis type definition (e.g., `value`, `category`, `time`). |
+| **yaxis** | Choice | Axis type definition. |
+| **data** | Text | The dataset definition in JSON5 format. |
+| **series** | Text | The series configuration in JSON5 format. |
+| **options** | Formula | **Read-only.** Aggregates the above fields into a valid ECharts option object string. |
 
-### App Plugins (Global)
-App plugins extend the entire Thymer application with global functionality, for example:
+## Usage
 
-- **Status bar items** - Display information in the app's status bar
-- **Sidebar items** - Add navigation items to the sidebar
-- **Command palette commands** - Add custom commands
-- **Custom panels** - Create new panel types
-- **Toaster notifications** - Show user notifications
+### Chart Editor View
 
-### Collection Plugins
-Collection plugins extend a specific note Collection, for example:
+1.  Embed the collection into a document using `/app`.
+2.  Change the view type on the embedded block to **Chart Editor**.
+3.  Filter the view to a specific record to access the editing interface.
+4.  Modifications to the JSON fields in the right-hand panel trigger an immediate re-render of the chart.
 
-- **Base view hooks** - Overrides/render hooks for table, boards, gallery and calendar views
-- **Custom views** - Create custom view types
-- **Custom properties** - New data fields with custom rendering
-- **Navigation buttons** - Collection-specific actions
-- **Formulas** - Computed properties
-- **Filters and sorting** - Custom data organization
+### Inline Rendering
 
----
+To render a chart within a text note:
 
-## Quick Start
+1.  Create a link to the chart record (e.g., `[[Line Chart]]`).
+2.  Set the link style to **Link with Icons** (or Link Button).
+3.  The plugin's `MutationObserver` detects this element, validates the target record, and injects the `<echarts-chart>` custom element into the DOM.
 
-This guide shows how to get started with plugin development using your favorite code IDE and Hot Reload in Thymer:
+## Development
 
-### 1 · Clone & install
+This project uses the Thymer Plugin SDK and requires a local Chrome instance with remote debugging enabled.
+
+### Prerequisites
+
+*   Node.js
+*   Google Chrome, Brave, or MS Edge
+
+### Installation
 
 ```bash
-git clone https://github.com/thymerapp/thymer-plugin-sdk.git
-cd thymer-plugin-sdk
 npm install
 ```
----
 
-### 2 · Start Chrome with debugging port
+### Debugging
 
-```bash
-chrome --remote-debugging-port=9222 --no-first-run https://myaccount.thymer.com
-```
+Start Chrome with the remote debugging port enabled:
 
-or on macOS:
-
+**macOS:**
 ```bash
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 --user-data-dir="/tmp/chrome-debug-profile" --no-first-run https://myaccount.thymer.com
 ```
 
-*Edge Chromium works too.*
+**Windows:**
+```bash
+chrome --remote-debugging-port=9222 --no-first-run https://myaccount.thymer.com
+```
 
----
+### Build and Watch
 
-### 3 · Enable Hot Reload in Thymer
-
-- Open Thymer running in your debugging Chrome Window from the step above.
-- Press Cmd+P/Ctrl+P to bring up the Command Palette, select "Plugins".
-- Find your Global/Collection Plugin. To get started with a quick test, click "Create Plugin" to create a test Global Plugin.
-- In the Code Editor dialog, select the "Developer Tools" tab.
-- Click "Enable Plugin Hot Reload"
-
-### 4 · Start the dev loop
+To start the development loop with Hot Module Replacement (HMR):
 
 ```bash
 npm run dev
 ```
 
-or, with verbose output (shows the code being pushed):
+### Deployment
 
-```bash
-npm run dev:verbose
-```
+To generate the final bundle for manual installation:
 
-### 5 · Start developing 
+1.  Run `npm run build`.
+2.  Copy the contents of `dist/plugin.js` into the Thymer **Custom Code** dialog.
+3.  Copy the contents of `plugin.json` into the Thymer **Configuration** dialog.
 
-Start developing your plugin in `plugin.js` and `plugin.json`.
+## Architecture
 
-If you've created a new Global Plugin in step 3 to give it a quick test, simply uncomment the _export class Plugin extends AppPlugin_ example in plugin.js and save.
+The codebase is structured into modular TypeScript components:
 
-The development loop started in step 4 watches your plugin files for changes. When you save changes to plugin.js or plugin.json:
-
-1. The code is bundled into dist/plugin.js with inline sourcemaps for debugging
-2. The bundle is automatically pushed to Chrome via the debugger connection
-3. Thymer detects the changes and hot-reloads your plugin with the updates
-
-This allows you to rapidly iterate and test changes without saving to your workspace. Once you're satisfied with the changes, you can save them permanently.
-
-### 6 · Production build
-
-Finished developing?
-
-```bash
-npm run build    # emits dist/plugin.js
-```
-
-Copy the contents of `dist/plugin.js` in your plugin's Edit Code > Custom Code dialog.
-Copy the contents of `plugin.json` in your plugin's Edit Code > Configuration dialog.
-
----
-
-## Tips
-
-### Adding properties and views
-
-For Collection Plugins, the list of custom properties and views (their name, icon, types, order and other settings) can be found in `plugin.json`. Behavior for those properties and views (like render hooks, defining custom view types, writing formulas) can then be added in `plugin.js`.
-
-### Modifying plugins without build step
-
-Of course you can also simply write your JS and JSON directly int othe Edit Code dialog and skip all the steps above. That's typically what you want when making quick changes like adding a formula to one of your collection properties. For example, adding a Total column to your database table view which shows the value of Hours * Amount:
-
-```js
-class Plugin extends CollectionPlugin {
-
-   onLoad() {
-     this.properties.formula("Total", ({record}) => {
-         const quantity = record.number("Hours");
-         const unitPrice = record.number("Amount");
-         if (quantity == null || unitPrice == null) return null;
-         return quantity * unitPrice;
-     });
-   }
-
-}
-```
-
-
-
-### Bundling assets
-
-When using the development environment as described in ***Quick Start***, you can bundle small assets along by simply importing them:
-
-| Type | How to import | Usage |
-|------|---------------|----------------|
-| **CSS** | `import css  from './styles.css';` | bundled as plain text → `this.ui.injectCSS(css)` |
-| **PNG / SVG / JPG** | `import icon from './icon.png';` | data URL, e.g. `background: url(${icon})` |
-
-This should work great for CSS, small images, and so on. As the plugins become part of your workspace data, we recommend hosting large assets externally.
-
-
----
-
-### Troubleshooting and gotcha's
-
-- Your plugin code is stored in your Workspace data and needs to be downloaded, so make sure the asset bundle isn't too big.
-- We use localStorage for Hot Reloading, which adds an additional size limit of a few MB.
-- Consider using external URLs/fetch/import to import large dependencies or assets.
-- If you're writing/pasting code directly into the Edit Code dialog in Thymer, make sure not to include and _export_ or _import_ keywords. They only work in the development set up and are removed by the build step.
-
-### Using the Examples
-
-You can find several examples of app plugins and collection plugins in the examples directory.
-
-To test any of the examples, follow the Quick Start instructions above and copy its `.js` contents into `plugin.js`, and its `.json` contents into `plugin.json`.
-
-Copy-pasting the examples directly into the _Edit Code_ dialog in Thymer only works if they don't use any assets/`import`s, and the `export` keyword is removed. Otherwise you need to use the build step first as described in Quick Start step 6.
-
-### API
-
-Review the types.d.ts file for complete API documentation. This should also provide autocomplete in most IDEs.
-
-## Support
-
-The Plugin SDK is currently in beta and actively being developed, breaking changes are very likely to happen. 
-
-We'd love to get your feedback and suggestions for improvements, please let us know what features you'd like to see or any problems you encounter. 
-
-Join the Thymer community to participate in discussions and get support.
-
----
-
-Happy hacking! 🛠️
+*   **`plugin.ts`**: Entry point. Registers properties, views, and initializes the `MutationObserver`.
+*   **`echarts-chart.ts`**: A `LitElement` wrapper for the ECharts library. Handles script loading, resizing, and theme application.
+*   **`echarts-data.ts` / `echarts-series.ts`**: Custom property renderers that provide preview tables and trigger the modal editor.
+*   **`form-modal.ts`**: A framework-agnostic modal implementation that matches Thymer's native DOM structure and CSS variables.
+*   **`helpers.ts`**: Utilities for parsing JSON5.
