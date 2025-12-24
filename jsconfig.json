@@ -11,13 +11,15 @@
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false
     },
     "include": [
         "*.js",
         "*.ts",
         "*.d.ts"
-    ],
+, "lib/JSON5.js", "lib/chart-theme.js"    ],
     "exclude": [
         "node_modules",
         "dist"

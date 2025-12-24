@@ -1,12 +1,16 @@
-import JSON5 from "./JSON5.js";
+import JSON5 from "./lib/JSON5.js";
 
-import { EchartsSeries, registerSeriesUI } from "./lib/series.js";
-import {parseData, renderDataset, EchartsData, registerDataUI} from "./lib/data.js";
-import {renderChart, Chart} from "./lib/chart.js";
-
+import { EchartsSeries } from "./lib/elements/echarts-series.js";
+import { EchartsData } from "./lib/elements/echarts-data.js";
+import { parseData } from "./lib/helpers.js";
+import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart";
 
 export class Plugin extends CollectionPlugin {
   onLoad() {
+    EchartsChart.register(this);
+    EchartsData.register(this);
+    EchartsSeries.register(this);
+
     this.properties.formula("options", ({ record }) => {
       const xaxis = record.text("x-axis");
       const yaxis = record.text("y-axis");
@@ -48,23 +52,7 @@ export class Plugin extends CollectionPlugin {
       return JSON.stringify(opts);
     });
 
-	registerDataUI(this);
-	registerSeriesUI(this);
-
-    if (!customElements.get("e-chart")) {
-      customElements.define("e-chart", Chart);
-    }
-
-    this.properties.render("options", ({ record, prop, view }) => {
-      let options = prop.text() || "{}";
-
-      const el = document.createElement("e-chart");
-
-      el.setAttribute("options", options);
-      return el;
-    });
-
-    
+    console.log("customElements", customElements);
 
     this.startObserving();
     this.views.afterRenderGalleryCard(
@@ -78,75 +66,7 @@ export class Plugin extends CollectionPlugin {
   }
 
   startObserving() {
-    const targetClass = ".lineitem-ref.clickable";
-
-    const attach = (el) => {
-      if (el.classList.contains("chart-widget-hijack")) {
-        return;
-      }
-
-      const guid = el.getAttribute("data-guid");
-      if (!guid) return;
-      const record = this.data.getRecord(guid);
-      const row = record?.row;
-
-      if (!row?.kv?.series) {
-        return;
-      }
-      const allProps = record?.getAllProperties();
-      const options = allProps?.find((o) => o.name === "options")?.value?.[1];
-      if (!options) {
-        return;
-      }
-
-      el.dataset.hasChart = "true";
-      el.classList.add("chart-widget-hijack");
-
-      const chartContainer = document.createElement("div");
-      chartContainer.style.width = "100%";
-      chartContainer.style.height = "100%";
-      chartContainer.textContent = "";
-
-      el.appendChild(chartContainer);
-      setTimeout(() => {
-        console.log("el", el);
-        if (chartContainer) {
-          el.parentElement.style.display = "flex";
-          el.parentElement.style.width = "100%";
-          el.style.background = "transparent";
-          el.style.border = "none";
-          el.style.width = "100%";
-          renderChart(chartContainer, options);
-        }
-      }, 1);
-    };
-
-    // 2. MUTATION OBSERVER (The Robot Logic)
-    this.observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          // Check if it's an element
-          if (node.nodeType === 1) {
-            // Check if the node itself is a link button
-            if (node.classList.contains(targetClass)) {
-              attach(node);
-            }
-            // Check if the node CONTAINS link buttons (e.g. a whole paragraph pasted in)
-            else if (node.querySelectorAll) {
-              node.querySelectorAll(targetClass).forEach(attach);
-            }
-          }
-        });
-      });
-    });
-
-    // Watch the whole body, just like the Robot
-    this.observer.observe(document.body, { childList: true, subtree: true });
-
-    // Attach to existing ones on load
-    setTimeout(() => {
-      document.querySelectorAll(targetClass).forEach(attach);
-    }, 1000);
+    this.observer = observeAndInject(this);
   }
 
   onUnload() {

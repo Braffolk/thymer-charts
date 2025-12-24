@@ -1,0 +1,109 @@
+import { property } from "lit/decorators.js";
+import JSON5 from "../JSON5.js";
+import { openFormModal } from "../modal.js";
+import { LitElement, css, html, } from "lit";
+
+
+
+export class EchartsSeries extends LitElement {
+  @property()
+  ui: UIAPI | null = null;
+
+  @property()
+  val: any = null;
+
+  @property()
+  prop: PluginProperty | undefined = undefined;
+
+  connectedCallback() {
+    super.connectedCallback();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+  }
+
+  _editModal() {
+    let content = this.prop?.text() ?? '';
+    openFormModal(
+      {
+        "series": "textarea"
+      },
+      "Edit series",
+      {
+        "series": content
+      }
+    ).then((result) => {
+      if (!result) {
+        return;
+      }
+      console.log("results", result);
+      this.prop?.set(result.series ?? content)
+    })
+  }
+
+  render() {
+    let entries = [];
+    try {
+      let str = this.prop?.text();
+      let obj = JSON5.parse(str);
+      if (!Array.isArray(obj) && obj) {
+        entries = [obj];
+      } else if (Array.isArray(obj)) {
+        entries = obj;
+      }
+    } catch (e) {
+      console.error("Failed to parse series");
+      console.error(e);
+    }
+
+    console.log("series entries", entries);
+
+    const randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    const uniqid = randLetter + Date.now();
+    const btnId = `btn-${uniqid}`;
+    
+    return html`
+      <button
+        @click="${this._editModal}"
+      >
+        <span class="ti ti-pencil"></span>Edit series
+      </button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>X</th>
+            <th>Y</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${entries.map(e => 
+            html`<tr>
+              <td>${(e.type ? e.type?.toString() : "-")}</td>
+              <td>${(e.encode?.x ? e.encode?.x.toString() : "-")}</td>
+              <td>${(e.encode?.y ? e.encode?.y.toString() : "-")}</td>
+            </tr>`
+          )}
+        </tbody>
+      </table>
+    `;
+  }
+
+  static register(plugin: CollectionPlugin) {
+    if (!customElements.get("echarts-series")) {
+      customElements.define("echarts-series", EchartsSeries);
+    }
+
+    plugin.properties.render("series", ({ record, prop, view }) => {
+      let val = prop.text() || "{}";
+
+      const el = document.createElement("echarts-series") as EchartsSeries;
+      el.val = val;
+      el.ui = plugin.ui;
+      el.prop = prop;
+      return el;
+    });
+  }
+}
