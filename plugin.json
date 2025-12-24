@@ -173,7 +173,7 @@
 	"views": [
 		{
 			"id": "chart-gallery",
-			"type": "gallery",
+			"type": "custom",
 			"icon": "",
 			"label": "Gallery",
 			"description": "",

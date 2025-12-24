@@ -158,7 +158,7 @@ export function observeAndInject(plugin: CollectionPlugin): MutationObserver {
   const targetClass = ".lineitem-ref.clickable";
 
   const attach = (el: HTMLElement) => {
-    if (el.classList.contains("chart-widget-hijack")) {
+    if (el.classList.contains("chart-widget-hijack") || el.classList.contains("noembed")) {
       return;
     }
 

@@ -6,6 +6,7 @@ import { FormModal } from "./lib/elements/form-modal.js";
 import { parseData } from "./lib/helpers.js";
 import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart.js";
 import { parseDataset } from "./lib/parse/parse.js";
+import { chartGalleryViewHooks } from "./lib/views/chart-gallery.js";
 
 export class Plugin extends CollectionPlugin {
   observer: MutationObserver | null = null
@@ -69,6 +70,7 @@ export class Plugin extends CollectionPlugin {
           ?.remove();
       }
     );
+    this.views.register("Gallery", chartGalleryViewHooks);
   }
 
   startObserving() {
