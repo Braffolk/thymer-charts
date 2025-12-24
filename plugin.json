@@ -1,6 +1,191 @@
 {
 	"ver": 1,
-	"name": "My Plugin",
-	"icon": "puzzle",
-	"description": "My first plugin!"
+	"name": "Charts",
+	"icon": "ti-chart-bar",
+	"home": false,
+	"page_field_ids": [
+		"title",
+		"options",
+		"data",
+		"xaxis",
+		"yaxis",
+		"series"
+	],
+	"item_name": "Chart",
+	"description": "Charts",
+	"show_sidebar_items": true,
+	"show_cmdpal_items": true,
+	"fields": [
+		{
+			"icon": "ti-abc",
+			"id": "title",
+			"label": "Title",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "text"
+		},
+		{
+			"id": "data",
+			"active": true,
+			"icon": "ti-layout-board",
+			"label": "data",
+			"many": false,
+			"type": "text",
+			"read_only": false
+		},
+		{
+			"id": "xaxis",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "x-axis",
+			"many": false,
+			"type": "choice",
+			"read_only": false,
+			"choices": [
+				{
+					"active": true,
+					"icon": "",
+					"id": "value",
+					"label": "value",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "category",
+					"label": "category",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "time",
+					"label": "time",
+					"color": "13"
+				}
+			]
+		},
+		{
+			"id": "yaxis",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "y-axis",
+			"many": false,
+			"type": "choice",
+			"read_only": false,
+			"choices": [
+				{
+					"active": true,
+					"icon": "",
+					"id": "value",
+					"label": "value",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "category",
+					"label": "category",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "time",
+					"label": "time",
+					"color": "13"
+				}
+			]
+		},
+		{
+			"id": "series",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "series",
+			"many": true,
+			"type": "text",
+			"read_only": false
+		},
+		{
+			"id": "options",
+			"active": true,
+			"icon": "ti-layout-board",
+			"label": "options",
+			"many": false,
+			"type": "dynamic",
+			"read_only": true
+		},
+		{
+			"icon": "ti-clock-edit",
+			"id": "updated_at",
+			"label": "Modified",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-clock-plus",
+			"id": "created_at",
+			"label": "Created",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "datetime"
+		},
+		{
+			"icon": "ti-photo",
+			"id": "banner",
+			"label": "Banner",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "banner"
+		},
+		{
+			"icon": "ti-chart-bar",
+			"id": "utilization",
+			"label": "Utilization",
+			"many": false,
+			"read_only": true,
+			"active": true,
+			"type": "dynamic"
+		},
+		{
+			"icon": "ti-align-left",
+			"id": "icon",
+			"label": "Icon",
+			"many": false,
+			"read_only": false,
+			"active": true,
+			"type": "text"
+		}
+	],
+	"sidebar_record_sort_dir": "desc",
+	"sidebar_record_sort_field_id": "updated_at",
+	"managed": {
+		"fields": false,
+		"views": false,
+		"sidebar": false
+	},
+	"custom": {},
+	"views": [
+		{
+			"id": "chart-gallery",
+			"type": "gallery",
+			"icon": "",
+			"label": "Gallery",
+			"description": "",
+			"read_only": false,
+			"shown": true,
+			"field_ids": [
+				"title",
+				"options"
+			],
+			"sort_dir": "asc",
+			"sort_field_id": "title",
+			"group_by_field_id": null
+		}
+	]
 }

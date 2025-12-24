@@ -36,6 +36,11 @@ const chrome = await CDP();
 const tab    = chrome;
 console.log('🪄 Connected to Chrome DevTools (9222)');
 
+await tab.Network.enable();
+await tab.Network.setCacheDisabled({ cacheDisabled: true });
+try { await tab.Network.setBypassServiceWorker({ bypass: true }); } catch {}
+console.log('🧹 Cache disabled (dev mode) + SW bypass (if supported)');
+
 // Phase 1: Check if we can access Chrome debugger at all
 try {
 	await tab.Runtime.evaluate({ expression: '1+1' });
@@ -113,7 +118,7 @@ function push(jsCodeStr, jsonConfStr) {
 		console.log('\n');
 	}
 	
-	const codeWithName = jsCodeStr + '\n//# sourceURL=thymer-plugin.js';
+	const codeWithName = jsCodeStr + `\n//# sourceURL=thymer-plugin.js?ts=${Date.now()}`;
 	const expr = `window.refreshPlugin(${JSON.stringify(codeWithName)}, ${JSON.stringify(jsonConfStr)})`;  
 	tab.Runtime.evaluate({expression: expr, awaitPromise: true})
 	.then((result) => {
@@ -129,6 +134,7 @@ function push(jsCodeStr, jsonConfStr) {
 		const error = properties.result.find(prop => prop.name === 'error')?.value?.value;
 		
 		if (success) {
+			tab.Page.reload({ ignoreCache: true });
 			console.log('✅ Thymer plugin reloaded successfully');
 		} else {
 			console.error('❌ Plugin reload failed:', error || 'Unknown error');
@@ -138,7 +144,7 @@ function push(jsCodeStr, jsonConfStr) {
 }
 
 // Watch both files and push when either changes
-chokidar.watch([OUT, OUT_JSON]).on('change', (filePath) => {
+chokidar.watch([OUT_JSON, OUT]).on('change', (filePath) => {
 	console.log(`📝 File changed: ${filePath}`);
 	
 	try {
@@ -149,4 +155,3 @@ chokidar.watch([OUT, OUT_JSON]).on('change', (filePath) => {
 		console.error('❌ Error reading files:', error);
 	}
 });
-
