@@ -8,8 +8,10 @@ This plugin integrates Apache ECharts into Thymer, allowing for the creation, co
 
 The plugin extends the collection capabilities with two primary rendering modes:
 
-1.  **Chart Editor View**: A custom collection view that provides a split-pane interface. It displays the rendered chart on one side and configuration controls (JSON editors for data and series) on the other.
+1.  **Chart Editor View**: A customised collection view that provides a preview of the chart and custom previews of your data, series etc.
 2.  **Inline Widgets**: A DOM observation mechanism that detects specific link references (e.g., `[[Chart Name]]`) formatted as "Link with Icons" and replaces them with an interactive ECharts web component.
+
+## Example
 
 ## Data Model
 
@@ -28,10 +30,49 @@ The plugin relies on specific properties within the collection to generate the c
 
 ### Chart Editor View
 
-1.  Embed the collection into a document using `/app`.
-2.  Change the view type on the embedded block to **Chart Editor**.
-3.  Filter the view to a specific record to access the editing interface.
-4.  Modifications to the JSON fields in the right-hand panel trigger an immediate re-render of the chart.
+Enter your data. Currently the following format is expected (CSV and row-wise JSON is coming):
+
+```json
+{
+  "dimensions": [
+    "name",
+    "age",
+    "profession",
+    "score",
+    "date"
+  ],
+  "source": [
+    [
+      "Hannah Krause",
+      41,
+      "Engineer",
+      314,
+      "2011-02-12"
+    ],
+    [
+      "Zhao Qian",
+      20,
+      "Teacher",
+      351,
+      "2011-03-01"
+    ],
+    ...
+  ]
+}
+```
+
+Pick x-axis and y-axis (currently only cartesian charts are supported). Category for categories, value for numbers and time for time.
+
+Then click on edit series and enter your desired series types with encodings that map to dimensions:
+```
+[
+{"type": "bar", "encode": {"x": "name", "y": "score"}},
+{"type": "line", "encode": {"x": "name", "y": "age"}}
+]
+```
+
+The chart will automatically render and update while you make edits.
+
 
 ### Inline Rendering
 
@@ -48,7 +89,7 @@ This project uses the Thymer Plugin SDK and requires a local Chrome instance wit
 ### Prerequisites
 
 *   Node.js
-*   Google Chrome, Brave, or MS Edge
+*   Google Chrome
 
 ### Installation
 
