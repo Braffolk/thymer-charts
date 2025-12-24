@@ -52,17 +52,27 @@ export class EchartsData extends LitElement {
   ui: UIAPI | null = null;
 
   @property()
-  val: any = null;
-
-  @property()
   prop: PluginProperty | undefined = undefined;
 
-  connectedCallback() {
-    super.connectedCallback();
-  }
+  render() {
+    let content = this.prop?.text();
+    let data = parseData(content);
 
-  disconnectedCallback() {
-    super.disconnectedCallback();
+    return html`
+      <div class='entry'>
+        <button
+          class="button-normal button-normal-hover button-small"
+          @click="${this._editModal}"
+        >
+          <span class="ti ti-pencil"></span>
+          Edit data
+        </button>
+        <div class='preview'>
+          ${renderDataset(data)}
+        </div>
+        
+      </div>
+    `;
   }
 
   _editModal() {
@@ -84,29 +94,6 @@ export class EchartsData extends LitElement {
       })
   }
 
-  render() {
-    let content = this.prop?.text();
-    console.log("content", content);
-    let data = parseData(content);
-    console.log("data", data);
-
-    return html`
-      <div class='entry'>
-        <button
-          class="button-normal button-normal-hover button-small"
-          @click="${this._editModal}"
-        >
-          <span class="ti ti-pencil"></span>
-          Edit data
-        </button>
-        <div class='preview'>
-          ${renderDataset(data)}
-        </div>
-        
-      </div>
-    `;
-  }
-
   static register(plugin: CollectionPlugin) {
     if (!customElements.get("echarts-data")) {
       customElements.define("echarts-data", EchartsData);
@@ -116,7 +103,6 @@ export class EchartsData extends LitElement {
       let val = prop.text() || "{}";
 
       const el: EchartsData = document.createElement("echarts-data") as EchartsData;
-      el.val = val;
       el.ui = plugin.ui;
       el.prop = prop;
 

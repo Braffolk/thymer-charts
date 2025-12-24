@@ -3,9 +3,11 @@ import JSON5 from "./lib/JSON5.js";
 import { EchartsSeries } from "./lib/elements/echarts-series.js";
 import { EchartsData } from "./lib/elements/echarts-data.js";
 import { parseData } from "./lib/helpers.js";
-import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart";
+import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart.js";
 
 export class Plugin extends CollectionPlugin {
+  observer: MutationObserver | null = null
+
   onLoad() {
     EchartsChart.register(this);
     EchartsData.register(this);
@@ -51,8 +53,6 @@ export class Plugin extends CollectionPlugin {
       };
       return JSON.stringify(opts);
     });
-
-    console.log("customElements", customElements);
 
     this.startObserving();
     this.views.afterRenderGalleryCard(
