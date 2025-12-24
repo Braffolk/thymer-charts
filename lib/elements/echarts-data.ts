@@ -1,6 +1,6 @@
 import { css, html, LitElement, TemplateResult } from "lit";
 
-import {openFormModal} from "../modal.js";
+import {openFormModal} from "./form-modal.js";
 import { property } from "lit/decorators.js";
 import {parseData} from "../helpers.js";
 import { Dataset, Dimension } from "../types.js";

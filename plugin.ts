@@ -2,6 +2,7 @@ import JSON5 from "./lib/JSON5.js";
 
 import { EchartsSeries } from "./lib/elements/echarts-series.js";
 import { EchartsData } from "./lib/elements/echarts-data.js";
+import { FormModal } from "./lib/elements/form-modal.js";
 import { parseData } from "./lib/helpers.js";
 import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart.js";
 
@@ -12,6 +13,7 @@ export class Plugin extends CollectionPlugin {
     EchartsChart.register(this);
     EchartsData.register(this);
     EchartsSeries.register(this);
+    FormModal.register();
 
     this.properties.formula("options", ({ record }) => {
       const xaxis = record.text("x-axis");

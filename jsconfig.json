@@ -4,8 +4,8 @@
         "allowJs": true,
         "strict": true,
         "declaration": true,
-        "target": "ES2022",
-        "module": "ES2022",
+        "target": "es2022",
+        "module": "es2022",
         "moduleResolution": "node",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
@@ -18,8 +18,10 @@
     "include": [
         "*.js",
         "*.ts",
-        "*.d.ts"
-, "lib/JSON5.js", "lib/chart-theme.js"    ],
+        "*.d.ts",
+        "lib/JSON5.js",
+        "lib/chart-theme.js"
+    ],
     "exclude": [
         "node_modules",
         "dist"

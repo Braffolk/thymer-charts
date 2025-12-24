@@ -1,6 +1,6 @@
 import { property } from "lit/decorators.js";
 import JSON5 from "../JSON5.js";
-import { openFormModal } from "../modal.js";
+import { openFormModal } from "./form-modal.js";
 import { LitElement, css, html, } from "lit";
 
 function parseEntries(str: string | null | undefined) {
