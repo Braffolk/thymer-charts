@@ -1,10 +1,28 @@
 import { css, html, LitElement, TemplateResult } from "lit";
+import { until } from 'lit/directives/until.js';
 
 import {openFormModal} from "./form-modal.js";
 import { property } from "lit/decorators.js";
 import {parseData} from "../helpers.js";
-import { Dataset, Dimension } from "../types.js";
+import { Dataset, DataValue, Dimension, IngestionFormat } from "../types.js";
+import { parseDataset } from "../parse/parse.js";
 
+function format(value: DataValue) {
+  // number | string | Date | null;
+  if (typeof value === 'number') {
+    return value.toFixed(1);
+  } else if (typeof value === 'string') {
+    return value.slice(0, 32);
+  } else if (value instanceof Date) {
+    try {
+      return value.toLocaleDateString();
+    } catch {
+      return "NaT";
+    }
+  } else {
+    return "-";
+  }
+}
 
 function name(o: string | Dimension | null): string {
   if (typeof o !== 'string') {
@@ -13,21 +31,26 @@ function name(o: string | Dimension | null): string {
   return o?.toString();
 }
 
-export function renderDataset(obj: Dataset | null): TemplateResult {
-  if (!obj?.dimensions || !obj?.source) {
+export function renderDataset(obj: { dataset: Dataset; format: IngestionFormat } | null): TemplateResult {
+  if (!obj) {
+    return html`No dataset`;
+  }
+  let dataset: Dataset = obj.dataset;
+
+  if (!dataset?.dimensions || !dataset?.source) {
     return html`<h3>Invalid data</h3>`;
   }
   return html`
     <table>
       <thead>
         <tr>
-          ${obj.dimensions.map(o => html`<th>${name(o)}</th>`)}
+          ${dataset.dimensions.map(o => html`<th>${name(o)}</th>`)}
         </tr>
       </thead>
       <tbody>
-        ${obj.source.map(r => 
+        ${dataset.source.map(r => 
           html`<tr>
-            ${obj.dimensions.map((_, i) => html`<td>${r[i]}</tr>`)}
+            ${dataset.dimensions.map((_, i) => html`<td>${format(r[i])}</tr>`)}
           </tr>`
         )}
       </tbody>
@@ -56,7 +79,7 @@ export class EchartsData extends LitElement {
 
   render() {
     let content = this.prop?.text();
-    let data = parseData(content);
+    let data = parseDataset(content);
 
     return html`
       <div class='entry'>

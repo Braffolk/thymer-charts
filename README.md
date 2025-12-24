@@ -30,35 +30,35 @@ The plugin relies on specific properties within the collection to generate the c
 
 ### Chart Editor View
 
-Enter your data. Currently the following format is expected (CSV and row-wise JSON is coming):
+Enter your data. Currently the following formats are accepted:
 
+*Dimensions with row-wise arrays*:
 ```json
 {
-  "dimensions": [
-    "name",
-    "age",
-    "profession",
-    "score",
-    "date"
-  ],
+  "dimensions": ["name", "age", "profession", "score", "date"],
   "source": [
-    [
-      "Hannah Krause",
-      41,
-      "Engineer",
-      314,
-      "2011-02-12"
-    ],
-    [
-      "Zhao Qian",
-      20,
-      "Teacher",
-      351,
-      "2011-03-01"
-    ],
+    ["Hannah Krause", 41, "Engineer", 314, "2011-02-12"],
+    ["Zhao Qian",20,"Teacher",351,"2011-03-01"],
     ...
   ]
 }
+```
+
+*CSV*
+```
+name,age,profession,score,date
+Hannah Krause,41,Engineer,314,2011-02-12
+Zhao Qian,20,Teacher,351,2011-03-01
+...
+```
+
+*JSON rows*
+```
+[
+  {"name":"Hannah Krause","age":41,"profession":"Engineer","score":314,"date":"2011-02-12"},
+  {"name":"Zhao Qian","age":20,"profession":"Teacher","score":351,"date":"2011-03-01"},
+  ...
+]
 ```
 
 Pick x-axis and y-axis (currently only cartesian charts are supported). Category for categories, value for numbers and time for time.
@@ -72,6 +72,8 @@ Then click on edit series and enter your desired series types with encodings tha
 ```
 
 The chart will automatically render and update while you make edits.
+
+For examples, check out [echarts examples](https://echarts.apache.org/examples/en/index.html#chart-type-line) and [documentation](https://echarts.apache.org/en/option.html).
 
 
 ### Inline Rendering

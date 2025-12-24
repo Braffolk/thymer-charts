@@ -5,6 +5,7 @@ import { EchartsData } from "./lib/elements/echarts-data.js";
 import { FormModal } from "./lib/elements/form-modal.js";
 import { parseData } from "./lib/helpers.js";
 import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart.js";
+import { parseDataset } from "./lib/parse/parse.js";
 
 export class Plugin extends CollectionPlugin {
   observer: MutationObserver | null = null
@@ -18,8 +19,11 @@ export class Plugin extends CollectionPlugin {
     this.properties.formula("options", ({ record }) => {
       const xaxis = record.text("x-axis");
       const yaxis = record.text("y-axis");
-      let dataText = record.text("data");
-      let data = parseData(dataText);
+      const dataText = record.text("data");
+      
+      const result = parseDataset(dataText);
+      let data = result?.dataset;
+
       if (!data) {
         data = {
           source: [],

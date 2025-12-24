@@ -40,7 +40,7 @@ export class EchartsChart extends LitElement {
   `;
 
   @property()
-  options: string = "{}"
+  options: string | Promise<string> = "{}"
 
   _chart: any | null = null;
   _ro: ResizeObserver | null = null
@@ -70,8 +70,11 @@ export class EchartsChart extends LitElement {
     }
   }
 
-  _parseOptions() {
-    const str = this.getAttribute("options") ?? this.options ?? "";
+  async _parseOptions() {
+    let str = this.options ?? this.getAttribute("options") ?? "";
+    if (!!str && typeof str !== 'string' && typeof str.then === 'function') {
+      str = await str;
+    }
     if (!str) return {};
     try {
       return JSON5.parse(str);
@@ -108,7 +111,7 @@ export class EchartsChart extends LitElement {
 
     // init on the actual div inside shadow DOM
     this._chart = w.echarts.init(el, "thymer", { renderer: "svg" });
-    this._chart.setOption(this._parseOptions(), true);
+    this._chart.setOption(await this._parseOptions(), true);
 
     // Observe element size changes (NOT window resize)
     this._ro = new ResizeObserver(() => {
@@ -123,9 +126,10 @@ export class EchartsChart extends LitElement {
   updated(changed: PropertyValues<this>) {
     // apply new options when attribute/property changes
     if (changed.has("options") && this._chart) {
-      this._chart.setOption(this._parseOptions(), true);
-      // option changes can affect layout; do a light resize pass
-      this._queueResize(0);
+      this._parseOptions().then(opts => {
+        this._chart.setOption(opts, true);
+        this._queueResize(0);
+      })
     }
   }
 
@@ -139,7 +143,7 @@ export class EchartsChart extends LitElement {
     }
 
     plugin.properties.render("options", ({ record, prop, view }) => {
-      let options = prop.text() || "{}";
+      let options = prop.text();
 
       const el = document.createElement("echarts-chart");
       el.setAttribute("options", options);
