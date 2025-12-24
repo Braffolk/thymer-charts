@@ -12,7 +12,7 @@ const OUT = 'dist/plugin.js';
 const OUT_JSON = 'plugin.json';
 
 const buildCtx = await esbuild.context({
-	entryPoints : ['plugin.js'],
+	entryPoints : ['plugin.ts'],
 	bundle      : true,
 	format      : 'iife',           // one self-executing bundle
 	globalName  : 'plugins',        // expose the class on globalThis.plugins

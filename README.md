@@ -11,6 +11,15 @@ The plugin extends the collection capabilities with two primary rendering modes:
 1.  **Chart Editor View**: A customised collection view that provides a preview of the chart and custom previews of your data, series etc.
 2.  **Inline Widgets**: A DOM observation mechanism that detects specific link references (e.g., `[[Chart Name]]`) formatted as "Link with Icons" and replaces them with an interactive ECharts web component.
 
+# Installation
+
+1. Download a [releases](https://github.com/Braffolk/thymer-charts/releases) zip file 
+2. Go to thymer, create a collection called "Charts".
+3. Select its settings and on the upper right corner, select "Edit as code".
+4. Copy and paste the plugin.json file into configuration tab
+5. Copy and paste the long plugin.js file into "Custom code". 
+6. Save. The plugin is now enabled.
+
 ## Example
 
 ## Data Model
