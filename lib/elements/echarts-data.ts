@@ -5,6 +5,7 @@ import {openFormModal} from "./form-modal.js";
 import { property } from "lit/decorators.js";
 import { Dataset, DataValue, Dimension, IngestionFormat } from "../types.js";
 import { parseDataset } from "../parse/parse.js";
+import { buttonStyles } from "./styles.js";
 
 function format(value: DataValue) {
   // number | string | Date | null;
@@ -66,8 +67,16 @@ export class EchartsData extends LitElement {
     }
     .preview {
       flex: 1;
-      overflow: hidden;
+      overflow: auto;
+      max-width: 100%;
+      max-height: 300px;
     }
+    thead {
+      background: var(--cards-bg);
+      position: sticky;
+      top: 0;
+    }
+    ${buttonStyles}
   `;
 
   @property()
@@ -83,7 +92,6 @@ export class EchartsData extends LitElement {
     return html`
       <div class='entry'>
         <button
-          class="button-normal button-normal-hover button-small"
           @click=${this._editModal}
           @interceptedclick=${this._editModal}
         >
@@ -128,6 +136,7 @@ export class EchartsData extends LitElement {
       const el: EchartsData = document.createElement("echarts-data") as EchartsData;
       el.ui = plugin.ui;
       el.prop = prop;
+      el.style.maxWidth = "100%";
 
       return el;
     });
