@@ -2,7 +2,7 @@
 
 This plugin integrates Apache ECharts into Thymer, allowing for the creation, configuration, and rendering of charts directly within collection records and text documents.
 
-![Thymer charts](./examples/thymer-charts.png)
+![Thymer charts](./img/thymer-charts.png)
 
 ## Functionality
 
