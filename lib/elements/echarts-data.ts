@@ -3,7 +3,6 @@ import { until } from 'lit/directives/until.js';
 
 import {openFormModal} from "./form-modal.js";
 import { property } from "lit/decorators.js";
-import {parseData} from "../helpers.js";
 import { Dataset, DataValue, Dimension, IngestionFormat } from "../types.js";
 import { parseDataset } from "../parse/parse.js";
 
@@ -85,7 +84,8 @@ export class EchartsData extends LitElement {
       <div class='entry'>
         <button
           class="button-normal button-normal-hover button-small"
-          @click="${this._editModal}"
+          @click=${this._editModal}
+          @interceptedclick=${this._editModal}
         >
           <span class="ti ti-pencil"></span>
           Edit data

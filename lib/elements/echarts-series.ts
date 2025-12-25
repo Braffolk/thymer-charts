@@ -33,7 +33,8 @@ export class EchartsSeries extends LitElement {
     
     return html`
       <button
-        @click="${this._editModal}"
+        @click=${this._editModal}
+        @interceptedclick=${this._editModal}
       >
         <span class="ti ti-pencil"></span>Edit series
       </button>

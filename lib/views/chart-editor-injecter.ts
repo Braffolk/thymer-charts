@@ -49,6 +49,18 @@ export const observeAndModifyChartEditor = withObserverModifier({
       ev.stopImmediatePropagation();
       ev.stopPropagation();
       if (ev.cancelable) ev.preventDefault();
+
+      path[0]?.dispatchEvent(
+        new CustomEvent(`intercepted${ev.type}`, {
+          bubbles: true,
+          composed: true,
+          detail: {
+            currentTarget: ev.currentTarget,
+            target: ev.target,
+            type: ev.type
+          }
+        })
+      );
     };
 
     el.addEventListener("click", killDefaultEdit, true);
