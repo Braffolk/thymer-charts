@@ -19,7 +19,7 @@
 		{
 			"icon": "ti-abc",
 			"id": "title",
-			"label": "Title",
+			"label": "Titleee",
 			"many": false,
 			"read_only": false,
 			"active": true,
@@ -187,5 +187,8 @@
 			"sort_field_id": "title",
 			"group_by_field_id": null
 		}
-	]
+	],
+	"default_banner": {
+		"imgUrl": "https://kuk.ee/thymer-charts-banner.png"
+	}
 }

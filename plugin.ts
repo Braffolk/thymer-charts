@@ -1,83 +1,39 @@
-import JSON5 from "./lib/JSON5.js";
-
 import { EchartsSeries } from "./lib/elements/echarts-series.js";
 import { EchartsData } from "./lib/elements/echarts-data.js";
 import { FormModal } from "./lib/elements/form-modal.js";
-import { parseData } from "./lib/helpers.js";
-import { EchartsChart, observeAndInject } from "./lib/elements/echarts-chart.js";
-import { parseDataset } from "./lib/parse/parse.js";
+import { EchartsChart, observeAndInjectChartEmbeds } from "./lib/elements/echarts-chart.js";
 import { chartGalleryViewHooks } from "./lib/views/chart-gallery.js";
+import { createEchartsOptionsObject } from "./lib/formula.js";
+import { observeAndModifyChartEditor } from "./lib/views/chart-editor-injecter.js";
 
 export class Plugin extends CollectionPlugin {
-  observer: MutationObserver | null = null
+  destructors: Array<() => void> = [];
 
   onLoad() {
+    console.log(`thymer-charts loaded ${new Date().toTimeString()}`);
     EchartsChart.register(this);
     EchartsData.register(this);
     EchartsSeries.register(this);
     FormModal.register();
 
-    this.properties.formula("options", ({ record }) => {
-      const xaxis = record.text("x-axis");
-      const yaxis = record.text("y-axis");
-      const dataText = record.text("data");
-      
-      const result = parseDataset(dataText);
-      let data = result?.dataset;
-
-      if (!data) {
-        data = {
-          source: [],
-          dimensions: [],
-        };
-      }
-      let seriesText = record.text("series");
-      let series = [];
-      try {
-        series = JSON5.parse(seriesText);
-        if (!Array.isArray(series)) {
-          series = [];
-        }
-      } catch (e) {
-        console.error(e);
-        console.log("Failed to parse series", series);
-        series = [];
-      }
-
-      let opts = {
-        dataset: data,
-        xAxis: {
-          type: xaxis,
-        },
-        legend: {},
-        tooltip: {
-          trigger: "axis",
-        },
-        yAxis: {
-          type: yaxis,
-        },
-        series: series,
-      };
-      return JSON.stringify(opts);
-    });
+    this.properties.formula("options", createEchartsOptionsObject);
 
     this.startObserving();
-    this.views.afterRenderGalleryCard(
-      "Gallery",
-      ({ record, view, element }) => {
-        element
-          .getElementsByClassName("gallery-view-card-banner-container")?.[0]
-          ?.remove();
-      }
-    );
     this.views.register("Gallery", chartGalleryViewHooks);
   }
 
   startObserving() {
-    this.observer = observeAndInject(this);
+    this.destructors.push(observeAndInjectChartEmbeds(this));
+    this.destructors.push(observeAndModifyChartEditor(this));
   }
 
   onUnload() {
-    if (this.observer) this.observer.disconnect();
+    while (this.destructors.length > 0) {
+      try {
+        this.destructors.pop()?.();
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
 }

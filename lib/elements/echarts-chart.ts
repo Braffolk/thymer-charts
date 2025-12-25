@@ -2,6 +2,7 @@ import JSON5 from "../JSON5.js";
 import defaultTheme from "../chart-theme.js";
 import { html, css, LitElement, PropertyValues } from "lit";
 import { customElement, property } from 'lit/decorators.js';
+import { withObserverModifier } from "../helpers/observe-modifier.js";
 
 const ECHARTS_SRC =
   "https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js";
@@ -153,15 +154,12 @@ export class EchartsChart extends LitElement {
 }
 
 
-
-export function observeAndInject(plugin: CollectionPlugin): MutationObserver {
-  const targetClass = ".lineitem-ref.clickable";
-
-  const attach = (el: HTMLElement) => {
-    if (el.classList.contains("chart-widget-hijack") || el.classList.contains("noembed")) {
+export const observeAndInjectChartEmbeds = withObserverModifier({
+  targetClass: ".lineitem-ref.clickable",
+  callback: (plugin, el) => {
+    if (el.classList.contains("noembed")) {
       return;
     }
-
     const guid = el.getAttribute("data-guid");
     if (!guid) return;
     const record = plugin.data.getRecord(guid);
@@ -176,9 +174,6 @@ export function observeAndInject(plugin: CollectionPlugin): MutationObserver {
       return;
     }
 
-    el.dataset.hasChart = "true";
-    el.classList.add("chart-widget-hijack");
-
     const chartContainer = document.createElement("div");
     chartContainer.style.width = "100%";
     chartContainer.style.height = "100%";
@@ -186,7 +181,6 @@ export function observeAndInject(plugin: CollectionPlugin): MutationObserver {
 
     el.appendChild(chartContainer);
     setTimeout(() => {
-      console.log("el", el);
       if (chartContainer && options) {
         if (el.parentElement) {
           el.parentElement.style.display = "flex";
@@ -200,35 +194,5 @@ export function observeAndInject(plugin: CollectionPlugin): MutationObserver {
         el.replaceChildren(elChart);
       }
     }, 1);
-  };
-
-  let observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        // Check if it's an element
-        if (node.nodeType === 1) {
-          let el = node as HTMLElement;
-          // Check if the node itself is a link button
-          if (el.classList.contains(targetClass)) {
-            attach(el);
-          }
-          // Check if the node CONTAINS link buttons (e.g. a whole paragraph pasted in)
-          else if (el.querySelectorAll) {
-            el.querySelectorAll(targetClass).forEach((el) => attach(el as HTMLElement));
-          }
-        }
-      });
-    });
-  });
-
-  // Watch the whole body, just like the Robot
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  // Attach to existing ones on load
-  setTimeout(() => {
-    document.querySelectorAll(targetClass).forEach((el) => attach(el as HTMLElement));
-  }, 1000);
-
-  return observer;
-}
-
+  }
+})

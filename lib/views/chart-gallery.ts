@@ -40,7 +40,7 @@ export const chartGalleryViewHooks: Fun = (vc: PluginViewContext) => {
                 const template = document.createElement("template");
                 template.innerHTML = `
                     <span class="lineitem-ref clickable noembed" data-guid="${record.guid}">
-                        <span class="lineitem-ref-title clickable" data-guid="${record.guid}">
+                        <span class="lineitem-ref-title clickable noembed" data-guid="${record.guid}">
                             ${record.prop('title').text()}
                         </span>
                     </span>

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node dev.js",
     "dev:verbose": "node dev.js --print-code",
-    "build": "node dev.js --once"
+    "build": "node dev.js --once",
+    "dev:chrome": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --remote-debugging-port=9222 --user-data-dir=\"/tmp/chrome-debug-profile\" --no-first-run https://sebastian.thymer.com"
   },
   "scriptExplanations": {
     "dev": "build + watch + push to Chrome",
