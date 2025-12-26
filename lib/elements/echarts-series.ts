@@ -39,6 +39,19 @@ export class EchartsSeries extends LitElement {
   render() {
     let str = this.prop?.text();
     let entries = parseSeries(str);
+
+    const encodeKeys: string[] = [];
+    const seen = new Set<string>();
+    for (const e of entries) {
+      const enc = (e as any)?.encode;
+      if (!enc || typeof enc !== "object") continue;
+      for (const k of Object.keys(enc)) {
+        if (!seen.has(k)) {
+          seen.add(k);
+          encodeKeys.push(k);
+        }
+      }
+    }
     
     return html`
       <button
@@ -52,16 +65,17 @@ export class EchartsSeries extends LitElement {
         <thead>
           <tr>
             <th>Type</th>
-            <th>X</th>
-            <th>Y</th>
+            ${encodeKeys.map((k) => html`<th>${k}</th>`)}
           </tr>
         </thead>
         <tbody>
-          ${entries.map(e => 
+          ${entries.map(e =>
             html`<tr>
               <td>${(e.type ? e.type?.toString() : "-")}</td>
-              <td>${(e.encode?.x ? e.encode?.x.toString() : "-")}</td>
-              <td>${(e.encode?.y ? e.encode?.y.toString() : "-")}</td>
+              ${encodeKeys.map((k) => {
+                const v = (e as any)?.encode?.[k];
+                return html`<td>${v == null ? "-" : String(v)}</td>`;
+              })}
             </tr>`
           )}
         </tbody>

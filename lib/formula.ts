@@ -1,6 +1,7 @@
 import { parseDataset } from "./parse/parse";
 import JSON5 from "./JSON5.js";
 import { ChartFamily } from "./types";
+import { parseSeries } from "./elements/echarts-series";
 
 export type FormulaFunction = ({record, prop}: {record: PluginRecord, prop: PluginProperty}) => any;
 
@@ -25,17 +26,16 @@ export const createEchartsOptionsObject: FormulaFunction = ({record}) => {
         };
     }
     let seriesText = record.text("series");
-    let series = [];
-    try {
-        series = JSON5.parse(seriesText);
-        if (!Array.isArray(series)) {
-        series = [];
+    let series = parseSeries(seriesText);
+    series = series.map(o => {
+        if (o.encode?.x && o.encode?.y && yaxis == 'category') {
+            o.encode.seriesName = o.encode.x;
         }
-    } catch (e) {
-        console.error(e);
-        console.log("Failed to parse series", series);
-        series = [];
-    }
+        if (o.encode?.x && o.encode?.y && xaxis == 'category') {
+            o.encode.seriesName = o.encode.y;
+        }
+        return o;
+    })
 
     let opts: Record<string, any> = {
         dataset: data,

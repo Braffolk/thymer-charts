@@ -153,7 +153,7 @@ export class EchartsSeriesInput extends LitElement {
             @change=${(e: Event) => this._onTypeChange(index, (e.target as HTMLSelectElement).value)}
           >
             ${this._seriesTypeOptions(family).map(
-              (t) => html`<option value=${t}>${t}</option>`
+              (t) => html`<option value=${t} ?selected=${t === type}>${t}</option>`
             )}
           </select>
         </td>
@@ -173,7 +173,7 @@ export class EchartsSeriesInput extends LitElement {
 
   private _renderDimPicker(seriesIndex: number, encodeKey: string, current: unknown) {
     const getName = (o: string | Dimension) => (typeof o === "string" ? o : o.name);
-    const cur = typeof current === "string" ? current : "";
+    const cur = current == null ? "" : (typeof current === "string" ? current : String(current));
 
     const dims = (this.data as Dataset | null)?.dimensions ?? [];
 
@@ -181,6 +181,8 @@ export class EchartsSeriesInput extends LitElement {
         const customSentinel = "__custom__";
         const isCustom = cur !== "" && !dims.find((o) => getName(o) === cur);
         const selectValue = isCustom ? customSentinel : cur;
+
+        console.log('selectValue', selectValue);
 
         return html`
         <select
@@ -191,9 +193,9 @@ export class EchartsSeriesInput extends LitElement {
             else this._setEncode(seriesIndex, encodeKey, v);
             }}
         >
-            <option value="">(unset)</option>
-            ${dims.map((d) => html`<option value=${getName(d)}>${getName(d)}</option>`)}
-            <option value=${customSentinel}>Custom…</option>
+            <option value="" ?selected=${selectValue === ""}>(unset)</option>
+            ${dims.map((d) => html`<option value=${getName(d)} ?selected=${getName(d) === selectValue}>${getName(d)}</option>`)}
+            <option value=${customSentinel} ?selected=${selectValue === customSentinel}>Custom…</option>
         </select>
 
         ${isCustom || selectValue === customSentinel
