@@ -19,3 +19,24 @@ export interface Dataset {
   dimensions: (string | Dimension)[];
   source: DataRow[];
 }
+
+
+export type ChartFamily = 'cartesian' | 'polar' | 'matrix' | 'proportion' | 'geo' | 'single';
+
+export const familySpecificProperties = [
+  "xaxis",
+  "yaxis",
+  "singleAxis",
+  "radiusAxis",
+  "angleAxis",
+  "geoUrl",
+];
+
+export const familyToProperties: Record<ChartFamily, string[]> = {
+  'cartesian': ['xaxis', 'yaxis'],
+  'polar': ['radiusAxis', 'angleAxis'],
+  'matrix': [], // todo
+  'proportion': [],
+  'geo': ['geoUrl'], //todo
+  'single': ['singleAxis']
+}

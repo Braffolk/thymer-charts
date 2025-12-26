@@ -1,9 +1,8 @@
 import { parseDataset } from "./parse/parse";
 import JSON5 from "./JSON5.js";
+import { ChartFamily } from "./types";
 
 export type FormulaFunction = ({record, prop}: {record: PluginRecord, prop: PluginProperty}) => any;
-
-export type ChartFamily = 'cartesian' | 'polar' | 'matrix' | 'proportion' | 'geo' | 'single';
 
 export const createEchartsOptionsObject: FormulaFunction = ({record}) => {
     const xaxis = record.text("xaxis");
@@ -11,7 +10,7 @@ export const createEchartsOptionsObject: FormulaFunction = ({record}) => {
     const radiusAxis = record.text("radiusAxis");
     const angleAxis = record.text("angleAxis");
     const singleAxis = record.text('singleAxis');
-    const family: ChartFamily | string = record.text('family');
+    const family: ChartFamily | string = record.text('family') || "cartesian";
 
     const dataText = record.text("data");
 
@@ -64,10 +63,8 @@ export const createEchartsOptionsObject: FormulaFunction = ({record}) => {
     } else if (family == 'matrix') {
         // pass for now
     } else if (family == 'geo') {
-        // geo has no axis, but it DOES have a .geo
+        // geo has no axis, but it DOES have a .geo (lng, lat)
     }
-
-    console.log("opts", opts);
 
     return JSON.stringify(opts);
 }
