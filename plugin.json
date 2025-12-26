@@ -5,9 +5,9 @@
 	"home": false,
 	"page_field_ids": [
 		"title",
-		"family",
 		"options",
 		"data",
+		"family",
 		"xaxis",
 		"yaxis",
 		"singleAxis",
@@ -24,7 +24,7 @@
 		{
 			"icon": "ti-abc",
 			"id": "title",
-			"label": "Titlee",
+			"label": "Title",
 			"many": false,
 			"read_only": false,
 			"active": true,

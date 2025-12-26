@@ -1,16 +1,11 @@
-import { withObserverModifier } from "../helpers/observe-modifier";
+import { ObserveAgainError, withObserverModifier } from "../helpers/observe-modifier";
 import { patchedIdleCallback } from "../helpers/patched-idlecallback";
 import { ChartFamily, familySpecificProperties, familyToProperties } from "../types";
 
 const expectedRowProps = ['series', 'xaxis', 'yaxis'];
 
 export const chartEditorCss = `
-  .chart-single-editor {
-    border: 1px solid red !important;
-  }
   .chart-single-editor .page-props-row {
-    flex-direction: column !important;
-    display: flex;
   }
 `;
 
@@ -41,27 +36,27 @@ const onFamilyPotentiallyChanged = (record: PluginRecord, el: HTMLElement) => {
   })
 }
 
-const getPanelAndRecord = (plugin: CollectionPlugin): [PluginPanel | null, PluginRecord | null, any | null] => {
+const getPanelAndRecord = (plugin: CollectionPlugin): [PluginPanel | null, PluginRecord | null, any | null, boolean | null] => {
   const panel = plugin.ui.getActivePanel();
   const record = panel?.getActiveRecord();
   if (!panel || !record) {
     // shouldnt happen
-    return [null, null, null];
+    return [null, null, null, null];
   }
   const row = record.row.kv;
   const isChart = expectedRowProps.every(att => row.hasOwnProperty(att));
-  if (!isChart) {
-    return [null, null, null];
-  }
-  return [panel, record, row];
+  return [panel, record, row, isChart];
 }
 
 export const observeAndModifyChartEditor = withObserverModifier({
   targetClass: ".editor-panel",
   callback: (plugin, el) => {
-    const [panel, record, row] = getPanelAndRecord(plugin);
-    if (!row) {
+    const [panel, record, row, isChart] = getPanelAndRecord(plugin);
+    if (!isChart) {
       return;
+    }
+    if (!row || !record) {
+      throw new ObserveAgainError("No row");
     }
 
     console.log("chart editor context, modifying");
@@ -116,8 +111,8 @@ export const observeAndModifyChartEditor = withObserverModifier({
     if (id !== 'family') {
       return;
     }
-    const [panel, record, row] = getPanelAndRecord(plugin);
-    if (!row) {
+    const [panel, record, row, isChart] = getPanelAndRecord(plugin);
+    if (!row || !isChart) {
       return;
     }
     setTimeout(() => {

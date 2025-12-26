@@ -4,7 +4,13 @@ export type ObserverModifier = (plugin: CollectionPlugin) => (() => void);
 
 const modifiedClass = "charts-observer-modified";
 
-
+export class ObserveAgainError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "ObserveAgainError";
+        Object.setPrototypeOf(this, ObserveAgainError.prototype);
+    }
+}
 
 
 export function withObserverModifier({targetClass, callback, ...rest}: {
@@ -18,13 +24,19 @@ export function withObserverModifier({targetClass, callback, ...rest}: {
             if (el.classList.contains(modifiedClass)) {
                 return;
             }
-            el.classList.add(modifiedClass);
-            // we use requestIdleCallback (or a fallback) to make sure we dont do patches
-            // before the thymer modifications are done. otherwise this starts
-            // running in the middle of updates sometimes
-            patchedIdleCallback(() => {
+            
+            try {
                 callback(plugin, el);
-            })
+                el.classList.add(modifiedClass);
+            } catch (e) {
+                if (e instanceof ObserveAgainError) {
+                    // pass. Error can mean we need to call callback again.
+                } else {
+                    console.error(e);
+                    el.classList.add(modifiedClass);
+                }
+                
+            }
         };
 
 
@@ -98,8 +110,15 @@ export function withObserverModifier({targetClass, callback, ...rest}: {
             attributes: !!rest.onRowChange,
         });
 
-        const onLoadListener = () => {
+        let longTimeout = setTimeout(() => {
             document.querySelectorAll(targetClass).forEach((el) => attach(el as HTMLElement));
+        }, 6000);
+
+        const onLoadListener = () => {
+            longTimeout.close();
+            setTimeout(() => {
+                document.querySelectorAll(targetClass).forEach((el) => attach(el as HTMLElement));
+            }, 1000);
         };
         window.addEventListener('load', onLoadListener);
 
