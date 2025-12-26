@@ -120,7 +120,6 @@ export class EchartsData extends LitElement {
         if (!result) {
           return;
         }
-        console.log("results", result);
         this.prop?.set(result.data)
       })
   }

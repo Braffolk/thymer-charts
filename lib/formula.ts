@@ -41,7 +41,7 @@ export const createEchartsOptionsObject: FormulaFunction = ({record}) => {
         dataset: data,
         legend: {},
         tooltip: {
-            trigger: "axis",
+            trigger: family == "cartesian" ? "axis" : "item",
         },
         series: series,
     };
@@ -61,7 +61,40 @@ export const createEchartsOptionsObject: FormulaFunction = ({record}) => {
     } else if (family == 'proportion') {
         // proportion has no axis
     } else if (family == 'matrix') {
-        // pass for now
+        let s = series[0];
+        let x = s.encode?.x;
+        let y = s.encode?.y;
+        let v = s.encode?.value;
+        if (x && y) {
+            let ix = data.dimensions.findIndex(o => typeof o === 'string' ? o === x : o?.name === x);
+            let iy = data.dimensions.findIndex(o => typeof o === 'string' ? o === y : o?.name === y);
+            let iv = data.dimensions.findIndex(o => typeof o === 'string' ? o === v : o?.name === v);
+            if (ix >= 0 && iy >= 0 && iv >= 0) {
+                let vx = data.source.map(r => r[ix]).filter((v, i, arr) => arr.indexOf(v) === i);
+                let vy = data.source.map(r => r[iy]).filter((v, i, arr) => arr.indexOf(v) === i);
+                let rows = data.source.map(r => [r[ix], r[iy], r[iv]]);
+                let min = Math.min(...rows.map(o => o[2]).filter(o => typeof o === 'number').filter(Number.isFinite));
+                let max = Math.max(...rows.map(o => o[2]).filter(o => typeof o === 'number').filter(Number.isFinite));
+                
+                
+                opts.matrix = {
+                    x: {data: vx},
+                    y: {data: vy},
+                    left: 50
+                }
+                opts.visualMap = {
+                    dimension: 2,
+                    calculable: true,
+                    min: min, max: max,
+                    type: 'continuous'
+                };
+                delete s.encode;
+                delete opts.dataset;
+                delete opts.legend;
+                s.data = rows;
+                s.coordinateSystem = 'matrix';
+            }
+        }
     } else if (family == 'geo') {
         // geo has no axis, but it DOES have a .geo (lng, lat)
     }

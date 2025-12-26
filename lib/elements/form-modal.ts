@@ -1,6 +1,7 @@
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
+import JSON5 from "../JSON5.js";
 
 export type ModalFieldType =
   "text" | "textarea" | "number" | "json" |
@@ -115,7 +116,15 @@ export class FormModal extends LitElement {
     }, 150); // match your CSS transition timing
   }
 
+  private _stopEvent(e: Event): void {
+    // Prevent underlying app/global handlers from seeing modal interactions.
+    // Do NOT preventDefault here (so copy/paste/typing still works).
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+  }
+
   private _handleOverlayClick(e: MouseEvent): void {
+    this._stopEvent(e);
     // close only if clicking the background, not inside dialog
     if (e.target === this.querySelector(".modal-background")) {
       this._close(null);
@@ -123,6 +132,7 @@ export class FormModal extends LitElement {
   }
 
   private _handleKeyDown(e: KeyboardEvent): void {
+    this._stopEvent(e);
     if (e.key === "Escape") {
       e.preventDefault();
       this._close(null);
@@ -150,7 +160,7 @@ export class FormModal extends LitElement {
         if (input) (input as HTMLElement).style.borderColor = "";
 
         try {
-          result[key] = raw.trim() === "" ? null : JSON.parse(raw);
+          result[key] = raw.trim() === "" ? null : JSON5.parse(raw);
         } catch {
           hasError = true;
           if (input) (input as HTMLElement).style.borderColor = "red";
@@ -263,7 +273,13 @@ export class FormModal extends LitElement {
             ._active
             ? "active"
             : ""}"
+          @click=${this._stopEvent}
           @keydown=${this._handleKeyDown}
+          @keyup=${this._stopEvent}
+          @keypress=${this._stopEvent}
+          @copy=${this._stopEvent}
+          @cut=${this._stopEvent}
+          @paste=${this._stopEvent}
           tabindex="0"
         >
           <div class="modal-main">

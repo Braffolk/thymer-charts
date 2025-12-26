@@ -104,7 +104,6 @@ export class EchartsSeries extends LitElement {
       if (!result) {
         return;
       }
-      console.log("results", result);
       this.prop?.set(result.series ?? content)
     })
   }

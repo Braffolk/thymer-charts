@@ -3,6 +3,7 @@ import { decodeTextSmart, sniffFormat } from "./sniff";
 import type { IngestionFormat } from "../types";
 import * as XLSX from "xlsx";
 import * as Papa from "papaparse";
+import JSON5 from "../JSON5.js";
 
 
 export function parseDataset(data: Uint8Array | string): { dataset: Dataset; format: IngestionFormat } {
@@ -97,7 +98,7 @@ function parseCsvToDataset(text: string): Dataset {
    ========================= */
 
 function parseJsonToDataset(text: string): Dataset {
-  const obj = JSON.parse(text);
+  const obj = JSON5.parse(text);
 
   // If it already matches your Dataset shape, accept it (light validation)
   if (obj && typeof obj === "object" && Array.isArray(obj.dimensions) && Array.isArray(obj.source)) {

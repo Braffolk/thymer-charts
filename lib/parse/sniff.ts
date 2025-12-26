@@ -1,5 +1,4 @@
-import type { Dataset } from "../types.js";
-import type { IngestionFormat } from "../types.js";
+import JSON5 from "../JSON5.js";
 
 
 type SniffResult =
@@ -35,7 +34,7 @@ export function sniffFormat(data: Uint8Array): SniffResult {
   // JSON: cheap gate + parse attempt
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
     try {
-      JSON.parse(trimmed);
+      JSON5.parse(trimmed);
       return { format: "json", text };
     } catch {
       // fall through; could be “{” in CSV first cell, or broken JSON

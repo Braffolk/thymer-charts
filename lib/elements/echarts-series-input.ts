@@ -6,6 +6,8 @@ import { buttonStyles } from "./styles.js";
 import { parseSeries } from "./echarts-series.js";
 import { ChartFamily, Dataset, Dimension } from "../types.js";
 
+import JSON5 from "../JSON5.js";
+
 /**
  * Produces/edits a JSON string like:
  * [
@@ -87,7 +89,7 @@ export class EchartsSeriesInput extends LitElement {
     protected willUpdate(changed: Map<PropertyKey, unknown>) {
     if (changed.has("data") && typeof this.data === "string") {
         try {
-        this.data = JSON.parse(this.data);
+        this.data = JSON5.parse(this.data);
         } catch {
         this.data = { dimensions: [], source: [] } as any;
         }
@@ -181,8 +183,6 @@ export class EchartsSeriesInput extends LitElement {
         const customSentinel = "__custom__";
         const isCustom = cur !== "" && !dims.find((o) => getName(o) === cur);
         const selectValue = isCustom ? customSentinel : cur;
-
-        console.log('selectValue', selectValue);
 
         return html`
         <select
@@ -340,7 +340,7 @@ export class EchartsSeriesInput extends LitElement {
           { key: "angle", label: "Angle" },
         ];
       case "proportion":
-        return [{ key: "value", label: "Value" }];
+        return [{ key: "value", label: "Value" }, { key: "itemName", label: "itemName"}];
       case "geo":
         return [
           { key: "lng", label: "Lng" },
@@ -350,7 +350,11 @@ export class EchartsSeriesInput extends LitElement {
         return [{ key: "single", label: "Single" }];
       case "matrix":
         // You can extend this once you decide the encode keys for matrix in your plugin.
-        return [];
+        return [
+          { key: "x", label: "X" },
+          { key: "y", label: "Y" },
+          { key: "value", label: "Value" }
+        ];
       default:
         return [];
     }

@@ -77,12 +77,16 @@ export class EchartsChart extends LitElement {
       str = await str;
     }
     if (!str) return {};
-    try {
-      return JSON5.parse(str);
-    } catch (e) {
-      console.log("Failed to parse", str);
-      console.error(e);
-      return {};
+      if (typeof str === 'string') {
+      try {
+        return JSON5.parse(str);
+      } catch (e) {
+        console.log("Failed to parse", str);
+        console.error(e);
+        return {};
+      }
+    } else {
+      return str;
     }
   }
 
@@ -161,6 +165,7 @@ export const observeAndInjectChartEmbeds = withObserverModifier({
     if (el.classList.contains("noembed")) {
       return;
     }
+
     const guid = el.getAttribute("data-guid");
     if (!guid) return;
     const record = plugin.data.getRecord(guid);
@@ -169,8 +174,12 @@ export const observeAndInjectChartEmbeds = withObserverModifier({
     if (!row?.kv?.series) {
       return;
     }
-    const allProps = record?.getAllProperties();
-    const options = allProps?.find((o) => o.name === "options")?.value?.[1];
+    const optionsStr = record.prop('options').text();
+    if (!optionsStr) {
+      return;
+    }
+    const options = JSON.parse(optionsStr);
+    
     if (!options) {
       return;
     }
