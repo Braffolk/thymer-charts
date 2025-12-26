@@ -5,6 +5,7 @@ import { EchartsChart, observeAndInjectChartEmbeds } from "./lib/elements/echart
 import { chartGalleryViewHooks } from "./lib/views/chart-gallery.js";
 import { createEchartsOptionsObject } from "./lib/formula.js";
 import { observeAndModifyChartEditor } from "./lib/views/chart-editor-injecter.js";
+import { EchartsSeriesInput } from "./lib/elements/echarts-series-input.js";
 
 export class Plugin extends CollectionPlugin {
   destructors: Array<() => void> = [];
@@ -15,6 +16,7 @@ export class Plugin extends CollectionPlugin {
     EchartsData.register(this);
     EchartsSeries.register(this);
     FormModal.register();
+    EchartsSeriesInput.register(this);
 
     this.properties.formula("options", createEchartsOptionsObject);
 

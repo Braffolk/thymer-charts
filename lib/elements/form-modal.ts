@@ -2,7 +2,12 @@ import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
 
-export type ModalFieldType = "text" | "textarea" | "number" | "json";
+export type ModalFieldType =
+  "text" | "textarea" | "number" | "json" |
+  's.cartesian' | 's.polar' | 's.matrix' | 's.proportion' | 's.geo' | 's.single';
+export const modalFieldsSeries: Partial<ModalFieldType>[] = [
+  's.cartesian', 's.polar', 's.matrix', 's.proportion', 's.geo', 's.single'
+]
 export type ModalSchema = Record<string, ModalFieldType>;
 export type ModalResult = Record<string, unknown> | null;
 
@@ -28,10 +33,15 @@ export class FormModal extends LitElement {
   @property({ attribute: false })
   initialValues: Record<string, unknown> = {};
 
+  @property()
+  extras: Record<string, any> = {};
+
   // Internal refs / state
   private _resolver: ((v: ModalResult) => void) | null = null;
-  private _inputRefs: Record<string, Ref<HTMLInputElement | HTMLTextAreaElement>> =
-    {};
+  private _inputRefs: Record<
+    string,
+    Ref<HTMLElement & { value?: string }>
+  > = {};
 
   private _active = false;
 
@@ -39,7 +49,8 @@ export class FormModal extends LitElement {
   static open(
     schema: ModalSchema,
     title = "Configuration",
-    initialValues: Record<string, unknown> = {}
+    initialValues: Record<string, unknown> = {},
+    extras: Record<string, any> = {}
   ): Promise<Record<string, unknown> | null> {
     return new Promise((resolve) => {
       const el = document.createElement("form-modal") as FormModal;
@@ -47,6 +58,7 @@ export class FormModal extends LitElement {
       el.title = title;
       el.initialValues = initialValues;
       el._resolver = resolve;
+      el.extras = extras;
       document.body.appendChild(el);
 
       // next frame -> animate in + focus
@@ -179,6 +191,41 @@ export class FormModal extends LitElement {
       `;
     }
 
+    if (modalFieldsSeries.includes(type)) {
+      const data = this.extras.data ?? { dimensions: [], source: [] };
+
+      // IMPORTANT: family comes from the field type (s.cartesian -> cartesian)
+      const fam =
+        typeof type === "string" && type.startsWith("s.")
+          ? (type.slice(2) as any)
+          : (this.extras.family ?? "cartesian");
+
+      // IMPORTANT: initial series often arrives as array/object -> JSON stringify
+      const initialSeries = this.initialValues?.[key];
+      const seriesValue =
+        initialSeries == null
+          ? ""
+          : typeof initialSeries === "string"
+          ? initialSeries
+          : JSON.stringify(initialSeries);
+
+      const r =
+        this._inputRefs[key] ??
+        (this._inputRefs[key] = createRef<HTMLElement & { value?: string }>());
+
+      return html`
+        <div class="form-field">
+          <label>${labelText}</label>
+          <echarts-series-input
+            ${ref(r)}
+            .value=${seriesValue}
+            .family=${fam}
+            .data=${data}
+          />
+        </div>
+      `;
+    }
+
     if (type === "number") {
       return html`
         <div class="form-field">
@@ -272,7 +319,8 @@ export class FormModal extends LitElement {
 export function openFormModal(
   schema: ModalSchema,
   title = "Configuration",
-  initialValues: Record<string, unknown> = {}
+  initialValues: Record<string, unknown> = {},
+  extras: Record<string, any> | undefined = {}
 ): Promise<Record<string, unknown> | null> {
-  return FormModal.open(schema, title, initialValues);
+  return FormModal.open(schema, title, initialValues, extras);
 }

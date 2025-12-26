@@ -1,10 +1,11 @@
 import { property } from "lit/decorators.js";
 import JSON5 from "../JSON5.js";
-import { openFormModal } from "./form-modal.js";
+import { ModalFieldType, openFormModal } from "./form-modal.js";
 import { LitElement, css, html, } from "lit";
 import { buttonStyles } from "./styles.js";
+import { parseDataset } from "../parse/parse.js";
 
-function parseEntries(str: string | null | undefined) {
+export function parseSeries(str: string | null | undefined) {
   let entries = [];
   try {
     let obj = JSON5.parse(str);
@@ -32,9 +33,12 @@ export class EchartsSeries extends LitElement {
   @property()
   prop: PluginProperty | undefined = undefined;
 
+  @property()
+  record: PluginRecord | undefined = undefined;
+
   render() {
     let str = this.prop?.text();
-    let entries = parseEntries(str);
+    let entries = parseSeries(str);
     
     return html`
       <button
@@ -67,13 +71,20 @@ export class EchartsSeries extends LitElement {
 
   _editModal() {
     let content = this.prop?.text() ?? '';
+    let family = this.record.prop('family').text() ?? 'cartesian';
+    let dataset = parseDataset(this.record.prop('data').text())?.dataset;
+    let fieldType = `s.${family}` as ModalFieldType;
     openFormModal(
       {
-        "series": "textarea"
+        "series": fieldType
       },
       "Edit series",
       {
-        "series": content
+        "series": parseSeries(content)
+      },
+      {
+        "family": family,
+        "data": dataset
       }
     ).then((result) => {
       if (!result) {
@@ -95,6 +106,7 @@ export class EchartsSeries extends LitElement {
       const el = document.createElement("echarts-series") as EchartsSeries;
       el.ui = plugin.ui;
       el.prop = prop;
+      el.record = record;
       return el;
     });
   }
