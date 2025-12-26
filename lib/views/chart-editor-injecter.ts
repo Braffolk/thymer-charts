@@ -31,7 +31,9 @@ export const observeAndModifyChartEditor = withObserverModifier({
     el.classList.add('chart-single-editor');
 
     // Kill off the default editor for fields we have custom editors for.
-    const interceptForIds = new Set(["options", "series", "data"]);
+    const interceptForIds = new Set([
+      "options", "series", "data"
+    ]);
     const killDefaultEdit = (ev: Event) => {
       const path = (ev as any).composedPath?.() ?? [];
 

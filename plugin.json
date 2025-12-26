@@ -5,10 +5,15 @@
 	"home": false,
 	"page_field_ids": [
 		"title",
+		"family",
 		"options",
 		"data",
 		"xaxis",
 		"yaxis",
+		"singleAxis",
+		"radiusAxis",
+		"angleAxis",
+		"geoUrl",
 		"series"
 	],
 	"item_name": "Chart",
@@ -19,11 +24,64 @@
 		{
 			"icon": "ti-abc",
 			"id": "title",
-			"label": "Title",
+			"label": "Titlee",
 			"many": false,
 			"read_only": false,
 			"active": true,
 			"type": "text"
+		},
+		{
+			"id": "family",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "Family",
+			"many": false,
+			"type": "choice",
+			"read_only": false,
+			"choices": [
+				{
+					"active": true,
+					"icon": "",
+					"id": "cartesian",
+					"label": "Cartesian (x, y-axis, e.g scatter/bars/lines)",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "proportion",
+					"label": "Proportion (no axis, e.g pies/funnels)",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "matrix",
+					"label": "Matrix (heatmaps)",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "geo",
+					"label": "Geo (Maps)",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "polar",
+					"label": "Polar (radius and angle)",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "single",
+					"label": "Single axis",
+					"color": "13"
+				}
+			]
 		},
 		{
 			"id": "data",
@@ -38,7 +96,7 @@
 			"id": "xaxis",
 			"active": true,
 			"icon": "ti-align-left",
-			"label": "x-axis",
+			"label": "X-axis",
 			"many": false,
 			"type": "choice",
 			"read_only": false,
@@ -70,7 +128,7 @@
 			"id": "yaxis",
 			"active": true,
 			"icon": "ti-align-left",
-			"label": "y-axis",
+			"label": "Y-axis",
 			"many": false,
 			"type": "choice",
 			"read_only": false,
@@ -99,10 +157,115 @@
 			]
 		},
 		{
+			"id": "singleAxis",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "Single-axis",
+			"many": false,
+			"type": "choice",
+			"read_only": false,
+			"choices": [
+				{
+					"active": true,
+					"icon": "",
+					"id": "value",
+					"label": "value",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "category",
+					"label": "category",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "time",
+					"label": "time",
+					"color": "13"
+				}
+			]
+		},
+		{
+			"id": "radiusAxis",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "Radius-axis",
+			"many": false,
+			"type": "choice",
+			"read_only": false,
+			"choices": [
+				{
+					"active": true,
+					"icon": "",
+					"id": "value",
+					"label": "value",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "category",
+					"label": "category",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "time",
+					"label": "time",
+					"color": "13"
+				}
+			]
+		},
+		{
+			"id": "angleAxis",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "Angle-axis",
+			"many": false,
+			"type": "choice",
+			"read_only": false,
+			"choices": [
+				{
+					"active": true,
+					"icon": "",
+					"id": "value",
+					"label": "value",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "category",
+					"label": "category",
+					"color": "13"
+				},
+				{
+					"active": true,
+					"icon": "",
+					"id": "time",
+					"label": "time",
+					"color": "13"
+				}
+			]
+		},
+		{
+			"id": "geoUrl",
+			"active": true,
+			"icon": "ti-align-left",
+			"label": "GeoUrl (geoJSON or svg)",
+			"many": false,
+			"type": "text",
+			"read_only": false
+		},
+		{
 			"id": "series",
 			"active": true,
 			"icon": "ti-align-left",
-			"label": "series",
+			"label": "Series",
 			"many": true,
 			"type": "text",
 			"read_only": false
@@ -111,7 +274,7 @@
 			"id": "options",
 			"active": true,
 			"icon": "ti-layout-board",
-			"label": "options",
+			"label": "Preview",
 			"many": false,
 			"type": "dynamic",
 			"read_only": true

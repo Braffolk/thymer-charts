@@ -146,8 +146,9 @@ export class EchartsChart extends LitElement {
     plugin.properties.render("options", ({ record, prop, view }) => {
       let options = prop.text();
 
-      const el = document.createElement("echarts-chart");
-      el.setAttribute("options", options);
+      const el = document.createElement("echarts-chart") as EchartsChart;
+      el.options = options;
+      el.style.width = "100%";
       return el;
     });
   }
